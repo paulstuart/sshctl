@@ -29,10 +29,6 @@ func init() {
 	flag.IntVar(&timeout, "t", timeout, "timeout period")
 }
 
-func usage() {
-	fmt.Printf(" %s -f iplist.txt <cmd string>\n", os.Args[0])
-}
-
 func main() {
 	flag.Parse()
 	if len(os.Args) <= 1 {
