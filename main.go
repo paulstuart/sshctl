@@ -79,6 +79,7 @@ func main() {
 		if pw, err := terminal.ReadPassword(int(os.Stdin.Fd())); err == nil {
 			password = strings.TrimSpace(string(pw))
 		}
+		fmt.Println()
 	}
 
 	for _, host := range hosts {
