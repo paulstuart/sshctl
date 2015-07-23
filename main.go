@@ -17,6 +17,7 @@ var (
 	username = os.Getenv("SSH_USERNAME")
 	password = os.Getenv("SSH_PASSWORD")
 	hosts    = make([]string, 0, 1024)
+	port     = 22
 	timeout  = 5
 	ipFile   string
 	wg       sync.WaitGroup
@@ -25,6 +26,7 @@ var (
 func init() {
 	flag.StringVar(&ipFile, "f", "", "file containing list of IPs to run against")
 	flag.IntVar(&timeout, "t", timeout, "timeout period")
+	flag.IntVar(&port, "p", port, "ssh port")
 }
 
 func main() {
@@ -89,7 +91,8 @@ func main() {
 
 func tryHost(host, cmd string) {
 	defer wg.Done()
-	_, stdout, _, err := sshclient.Exec(host+":22", username, password, cmd, timeout)
+	to := fmt.Sprintf("%s:%d", host, port)
+	_, stdout, _, err := sshclient.Exec(to, username, password, cmd, timeout)
 	if err == nil {
 		stdout = strings.TrimSpace(stdout)
 	} else {
