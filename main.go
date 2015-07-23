@@ -16,12 +16,10 @@ import (
 var (
 	username = os.Getenv("SSH_USERNAME")
 	password = os.Getenv("SSH_PASSWORD")
-	works    = make(map[string]string)
 	hosts    = make([]string, 0, 1024)
 	timeout  = 5
 	ipFile   string
 	wg       sync.WaitGroup
-	cmd      string
 )
 
 func init() {
@@ -40,7 +38,7 @@ func main() {
 	for i := 0; i < flag.NArg(); i++ {
 		cmds[i] = flag.Arg(i)
 	}
-	cmd = strings.Join(cmds, " ")
+	cmd := strings.Join(cmds, " ")
 	if _, err := os.Stat(ipFile); err != nil {
 		flag.Usage()
 		log.Fatal("File not found:", err)
@@ -84,12 +82,12 @@ func main() {
 
 	for _, host := range hosts {
 		wg.Add(1)
-		go tryHost(host)
+		go tryHost(host, cmd)
 	}
 	wg.Wait()
 }
 
-func tryHost(host string) {
+func tryHost(host, cmd string) {
 	defer wg.Done()
 	_, stdout, _, err := sshclient.Exec(host+":22", username, password, cmd, timeout)
 	if err == nil {
